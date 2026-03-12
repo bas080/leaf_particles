@@ -1,11 +1,13 @@
 -- leaf_particles/init.lua
 
+
 local leaf_speed = 0.3
 local scan_box = vector.new(32, 8, 32)
 local update_distance = 4
 
 local spawn_interval = 20
-local particles_per_interval = 10
+local particles_per_interval = 2
+local spawner_chance = 0.2
 
 local player_cache = {}
 local wind = vector.new(0.2, 0, 0.1)
@@ -59,20 +61,20 @@ local function spawn_particles()
             local node = core.get_node_or_nil(lpos)
             if node and core.get_item_group(node.name, "leaves") > 0 then
                 local below = vector.offset(lpos, 0, -1, 0)
-                if core.get_node(below).name == "air" then
+                if core.get_node(below).name == "air" and (math.random() < spawner_chance) then
                     local posmin = vector.offset(below, -0.5, 0.8, -0.5)
                     local posmax = vector.offset(below,  0.5, 0.8,  0.5)
 
                     core.add_particlespawner({
                         size = 0.5,
-                        amount = spawn_interval / particles_per_interval,
+                        amount = particles_per_interval,
                         alpha = 0.1,
                         time = spawn_interval,
                         node = {name = node.name},
                         playername = player:get_player_name(),
                         collisiondetection = true,
                         collision_removal = true,
-                        exptime = 1500,
+                        exptime = 15,
                         minpos = posmin,
                         maxpos = posmax,
                         pos = {min = posmin, max = posmax},
