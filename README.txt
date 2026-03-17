@@ -1,6 +1,7 @@
 Leaf Particles
 =====
-Adds some leaf particles that drop from leaf blocks.
+Adds occasional leaf particles under all leaf blocks.
+Re-uses the leaf block texture for the particles, so it's compatible with all possible leaf nodes.
 
 See license.txt for license information.
 
