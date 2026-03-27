@@ -20,6 +20,11 @@ end
 
 local function update_leaf_cache(player)
     local pos = player:get_pos()
+
+    if pos.y < -10 then
+        return false
+    end
+
     local rounded = vector.round(pos)
     local cache = get_player_cache(player)
 
@@ -32,6 +37,8 @@ local function update_leaf_cache(player)
             true -- grouped makes it so no get_node_or_nil calls are necessary.
         )
     end
+
+    return true
 end
 
 local function pick_random(items, amount)
@@ -45,7 +52,13 @@ end
 local function spawn_particles()
 
     for _, player in ipairs(core.get_connected_players()) do
-        update_leaf_cache(player)
+        local found = update_leaf_cache(player)
+
+        -- The player is too far down in a cave.
+        if not found then
+            goto continue
+        end
+
         local cache = get_player_cache(player)
         if not cache.leaves then goto continue end
 
@@ -63,6 +76,7 @@ local function spawn_particles()
 
             core.add_particlespawner({
                 size = 0.5,
+                -- Should randomize
                 amount = particles_per_interval,
                 alpha = 0.1,
                 time = spawn_interval,
